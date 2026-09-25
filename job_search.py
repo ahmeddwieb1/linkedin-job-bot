@@ -15,81 +15,58 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 SEEN_JOBS_FILE    = os.path.join(os.path.dirname(__file__), "seen_jobs.json")
 SEEN_JOBS_TTL_DAYS = 7
-TOP_N = 10
+TOP_N_EGYPT  = 10
+TOP_N_EUROPE = 10
+TOP_N_COMPANY = 5
 
-# كل عمليات البحث ريموت بس (f_WT=2، متفرضة في search_linkedin)، ومحصورة
-# في المناطق المستهدفة: شمال أوروبا (الأولوية الأولى)، الخليج، مصر، وباقي
-# أوروبا. غيّر القايمة دي حسب البلاد اللي إنت عايز تشتغل فيها.
+EUROPE_COUNTRY_CODES = {
+    "de", "nl", "pl", "ie", "gb", "es", "pt", "fr", "it",
+    "se", "ch", "be", "dk", "fi", "no",
+}
+
+# البحث شامل onsite + hybrid + remote (شيلنا فلتر f_WT في search_linkedin)،
+# ومحصور في مصر (الأولوية الأولى) وأوروبا. غيّر القايمة دي حسب البلاد
+# اللي إنت عايز تشتغل فيها.
 LINKEDIN_SEARCHES = [
-    # شمال أوروبا — الأولوية الأولى
-    {"keywords": "AI automation",             "location": "Switzerland"},
-    {"keywords": "AI automation specialist",  "location": "Switzerland"},
-    {"keywords": "AI automation",             "location": "Denmark"},
-    {"keywords": "AI automation",             "location": "Finland"},
-    {"keywords": "AI automation",             "location": "Sweden"},
-    {"keywords": "AI automation",             "location": "Norway"},
-    {"keywords": "n8n automation",            "location": "Switzerland"},
-    {"keywords": "AI business analyst",       "location": "Sweden"},
-    # الخليج
-    {"keywords": "AI automation specialist",  "location": "United Arab Emirates"},
-    {"keywords": "AI agentic developer",      "location": "United Arab Emirates"},
-    {"keywords": "RPA developer no-code",     "location": "United Arab Emirates"},
-    {"keywords": "AI automation",             "location": "Saudi Arabia"},
-    {"keywords": "business analyst AI",       "location": "Saudi Arabia"},
-    {"keywords": "AI business analyst",       "location": "United Arab Emirates"},
-    {"keywords": "AI marketing automation",   "location": "United Arab Emirates"},
-    {"keywords": "AI operations",             "location": "United Arab Emirates"},
-    {"keywords": "n8n automation",            "location": "United Arab Emirates"},
-    {"keywords": "Claude AI automation",      "location": "United Arab Emirates"},
-    {"keywords": "AI automation",             "location": "Qatar"},
-    {"keywords": "AI automation",             "location": "Kuwait"},
-    {"keywords": "AI automation",             "location": "Bahrain"},
-    {"keywords": "AI automation",             "location": "Oman"},
-    # مصر
-    {"keywords": "AI automation developer",   "location": "Egypt"},
-    {"keywords": "AI business analyst",       "location": "Egypt"},
-    {"keywords": "AI automation",             "location": "Egypt"},
-    # باقي أوروبا
-    {"keywords": "AI automation",             "location": "United Kingdom"},
-    {"keywords": "AI automation",             "location": "Ireland"},
-    {"keywords": "AI automation",             "location": "Germany"},
-    {"keywords": "AI automation",             "location": "France"},
-    {"keywords": "AI automation",             "location": "Netherlands"},
-    {"keywords": "AI automation",             "location": "Spain"},
-    {"keywords": "AI automation",             "location": "Portugal"},
-    {"keywords": "AI automation",             "location": "Italy"},
-    {"keywords": "AI automation",             "location": "Poland"},
-    {"keywords": "AI automation",             "location": "Belgium"},
-    # لفّة أخيرة على الريموت عالمياً — من غير فلتر بلد، ريموت بس
-    {"keywords": "AI automation",             "location": "Worldwide", "remote_only": True},
-    {"keywords": "AI automation specialist",  "location": "Worldwide", "remote_only": True},
-    {"keywords": "n8n automation",            "location": "Worldwide", "remote_only": True},
-    {"keywords": "AI business analyst",       "location": "Worldwide", "remote_only": True},
+    # مصر — الأولوية الأولى
+    {"keywords": "devops engineer intern",    "location": "Egypt"},
+    {"keywords": "junior devops engineer",    "location": "Egypt"},
+    {"keywords": "cloud engineer intern",     "location": "Egypt"},
+    {"keywords": "junior cloud engineer",     "location": "Egypt"},
+    {"keywords": "devops intern",             "location": "Egypt"},
+    {"keywords": "cloud support engineer",    "location": "Egypt"},
+    {"keywords": "site reliability intern",   "location": "Egypt"},
+    {"keywords": "infrastructure engineer",   "location": "Egypt"},
+    # أوروبا
+    {"keywords": "junior devops engineer",    "location": "Germany"},
+    {"keywords": "devops engineer intern",    "location": "Germany"},
+    {"keywords": "junior devops engineer",    "location": "Netherlands"},
+    {"keywords": "cloud engineer intern",     "location": "Netherlands"},
+    {"keywords": "junior devops engineer",    "location": "Poland"},
+    {"keywords": "junior cloud engineer",     "location": "Poland"},
+    {"keywords": "junior devops engineer",    "location": "Ireland"},
+    {"keywords": "junior devops engineer",    "location": "United Kingdom"},
+    {"keywords": "junior devops engineer",    "location": "Spain"},
+    {"keywords": "junior devops engineer",    "location": "Portugal"},
+    {"keywords": "junior devops engineer",    "location": "France"},
+    {"keywords": "junior devops engineer",    "location": "Italy"},
+    {"keywords": "junior devops engineer",    "location": "Sweden"},
+    {"keywords": "devops intern",             "location": "Worldwide", "remote_only": True},
+    {"keywords": "junior devops engineer",    "location": "Worldwide", "remote_only": True},
+    {"keywords": "junior cloud engineer",     "location": "Worldwide", "remote_only": True},
 ]
 
-# بحث في شركات معيّنة — بيجيب أي وظيفة مفتوحة في الشركات دي، وبعدين
-# بيفلترها حسب علاقتها بمهاراتك.
+# بحث في شركات معيّنة — سيبناها فاضية دلوقتي، ضيف شركاتك المستهدفة هنا
+# لما تحددها، بنفس الشكل: {"keywords": "Company Name", "location": "Egypt"}.
 COMPANY_SEARCHES = [
-    {"keywords": "Bayzat",    "location": "United Arab Emirates"},
-    {"keywords": "Careem",    "location": "United Arab Emirates"},
-    {"keywords": "G42",       "location": "United Arab Emirates"},
-    {"keywords": "Talabat",   "location": "United Arab Emirates"},
-    {"keywords": "Halan",     "location": "Egypt"},
-    {"keywords": "Paymob",    "location": "Egypt"},
-    {"keywords": "Instabug",  "location": "Egypt"},
-    {"keywords": "Tamara",    "location": "Saudi Arabia"},
-    {"keywords": "maids.cc",  "location": "United Arab Emirates"},
-    {"keywords": "Qureos",    "location": "United Arab Emirates"},
 ]
 
 # الوظيفة اللي بتيجي من بحث الشركات لازم يكون في عنوانها كلمة على الأقل من
-# دول عشان تتحسب مناسبة. ضيف الكلمات بتاعة مجالك إنت هنا.
+# دول عشان تتحسب مناسبة.
 COMPANY_RELEVANCE_TITLE_WORDS = {
-    "automation", "ai", "agentic", "rpa", "analyst", "developer",
-    "engineer", "operations", "product", "data", "digital", "technical",
-    "software", "platform", "workflow", "process", "integration",
-    "solution", "consultant", "api", "system", "no-code", "low-code",
-    "marketing", "social", "n8n", "claude", "codex",
+    "devops", "cloud", "infrastructure", "platform", "sre", "reliability",
+    "systems", "engineer", "intern", "automation", "backend", "developer",
+    "administrator", "support", "security", "network",
 }
 
 LINKEDIN_HEADERS = {
@@ -108,76 +85,53 @@ ROLE_SCORES = {
     # أول عنصر هو الوظيفة رقم ١ في الأولوية — دالة score_job() بتاخد أول
     # تطابق في العنوان، يعني الترتيب مهم. حط الوظيفة اللي بتحلم بيها الأول
     # وبأعلى رقم، وخلّي الوظايف القريبة منها عالية بس تحتها.
-    "ai automation":         40,
-    "ai automation & business analyst": 38,
-    "ai business analyst":   30,
-    "ai marketing automation": 28,
-    "marketing automation":  24,
-    "ai ba":                 26,
-    "ai operations":         24,
-    "automation specialist": 25,
-    "workflow automation":   22,
-    "ai agentic":            25,
-    "agentic developer":     25,
-    "agentic engineer":      25,
-    "rpa developer":         20,
-    "rpa engineer":          20,
-    "robotic process":       18,
-    "no-code":               18,
-    "low-code":              18,
-    "automation consultant": 20,
-    "operations analyst":    18,
-    "business analyst":      18,
-    "ai product analyst":    18,
-    "automation engineer":   20,
-    "automation developer":  20,
-    "process automation":    18,
+    "devops intern":          40,
+    "cloud intern":           38,
+    "junior devops":          38,
+    "junior cloud":           36,
+    "devops engineer":        34,
+    "cloud engineer":         34,
+    "cloud support":          28,
+    "site reliability":       28,
+    "sre engineer":           28,
+    "platform engineer":      26,
+    "infrastructure engineer": 26,
+    "systems engineer":       20,
+    "systems administrator":  18,
+    "network engineer intern": 18,
+    "it intern":              16,
 }
 
 SKILL_SCORES = {
-    "ai automation": 20, "n8n":     22, "make.com":  18, "integromat": 15,
-    "zapier":       12, "claude":    16, "anthropic":  14,
-    "codex":        14, "airtable":  10, "supabase":   10,
-    "whatsapp":      8, "chatbot":    8, "llm":         8,
-    "gpt":           6, "openai":     6, "python":      6,
-    "automation":   10, "workflow":   4, "ai agent":   10,
-    "ai ops":       12,
+    "aws": 20, "terraform": 16, "kubernetes": 16, "docker": 14,
+    "ansible": 12, "gitlab": 10, "ci/cd": 10, "cicd": 10, "jenkins": 8,
+    "linux": 10, "nginx": 6, "cloudflare": 4,
+    "python": 8, "bash": 6, "java": 6, "spring boot": 6,
+    "mongodb": 6, "mysql": 6, "redis": 6, "sql": 4, "git": 4,
+    "devops": 12, "cloud": 8, "infrastructure as code": 10,
 }
 
 LOCATION_SCORES = {
-    # شمال أوروبا — الأولوية الأولى، بنقط أعلى من أي منطقة تانية
-    "switzerland": 26, "zurich": 26, "geneva": 26,
-    "denmark": 25, "copenhagen": 25,
-    "finland": 25, "helsinki": 25,
-    "sweden": 25, "stockholm": 25,
-    "norway": 25, "oslo": 25,
-    "ae": 20, "uae": 20, "dubai": 20, "abu dhabi": 20, "sharjah": 20, "united arab emirates": 20,
-    "sa": 18, "saudi": 18, "riyadh": 18, "jeddah": 18, "saudi arabia": 18,
-    "qa": 16, "qatar": 16, "doha": 16,
-    "kw": 15, "kuwait": 15,
-    "bh": 15, "bahrain": 15,
-    "om": 15, "oman": 15, "muscat": 15,
-    "eg": 16, "egypt": 16, "cairo": 16,
-    "worldwide": 15, "global": 15,
-    "united kingdom": 16, "uk": 16, "london": 16,
-    "ireland": 16, "dublin": 16,
-    "germany": 16, "berlin": 16, "munich": 16,
-    "france": 16, "paris": 16,
-    "netherlands": 16, "amsterdam": 16,
-    "spain": 16, "madrid": 16, "barcelona": 16,
-    "portugal": 16, "lisbon": 16,
-    "italy": 16, "milan": 16, "rome": 16,
-    "poland": 16, "warsaw": 16,
-    "belgium": 16, "brussels": 16,
-    "remote": 14,
+    # مصر — الأولوية الأولى
+    "eg": 26, "egypt": 26, "cairo": 26, "alexandria": 26, "giza": 26,
+    # أوروبا
+    "germany": 18, "berlin": 18, "munich": 18,
+    "netherlands": 18, "amsterdam": 18,
+    "poland": 18, "warsaw": 18,
+    "ireland": 18, "dublin": 18,
+    "united kingdom": 18, "uk": 18, "london": 18,
+    "spain": 18, "madrid": 18, "barcelona": 18,
+    "portugal": 18, "lisbon": 18,
+    "france": 18, "paris": 18,
+    "italy": 18, "milan": 18, "rome": 18,
+    "sweden": 18, "stockholm": 18,
+    "switzerland": 18, "zurich": 18,
+    "belgium": 18, "brussels": 18,
+    "worldwide": 12, "global": 12,
+    "remote": 10, "hybrid": 8,
 }
 
 TARGET_COMPANIES = [
-    "maids", "justmop", "helperplace", "qureos", "bayzat", "huspy", "coraly",
-    "halan", "paymob", "instabug", "breadfast", "rabbit",
-    "g42", "presight", "careem", "noon", "talabat", "dubizzle",
-    "stc", "neom", "zain", "tamara",
-    "automattic", "zapier", "make.com", "n8n",
 ]
 
 LOCATION_CODE_MAP = {
@@ -316,9 +270,11 @@ def parse_card(card, search_location: str) -> dict | None:
     company  = (company_tag.get_text(strip=True) if company_tag else "").strip()
     location = (loc_tag.get_text(strip=True)     if loc_tag     else search_location).strip()
 
-    # كل سيرش بيفرض f_WT=2 (ريموت)، يعني النتايج ريموت بطبيعتها؛
-    # فحص النص متسيب بس كإشارة على الهايبرد.
-    is_remote = True
+    # مفيش فلتر f_WT دلوقتي، يعني النتايج فيها onsite + hybrid + remote
+    # مع بعض. بنحدد النوع من نص العنوان/المكان لأن لينكدإن الـ guest API
+    # مابيرجعش badge صريح لنوع الشغل.
+    hay = f"{title} {location}".lower()
+    is_remote = "remote" in hay
 
     return {
         "job_id":        job_id,
@@ -340,7 +296,8 @@ def search_linkedin(keywords: str, location: str, remote_only: bool = False) -> 
         "keywords": keywords,
         "f_TPR":    "r259200",  # last 3 days
         "start":    0,
-        "f_WT":     "2",  # remote-work-type only — every search is remote-only now
+        # مفيش f_WT هنا خالص — يعني النتايج بتشمل onsite + hybrid + remote.
+        # لو حبيت ترجع تحصر النتايج على ريموت بس، رجّع "f_WT": "2".
     }
     if remote_only:
         # من غير فلتر بلد — بيدوّر في كل الدول بدل قايمة
@@ -511,22 +468,45 @@ def main():
         )
     else:
         # بيجيب عدد المتقدمين لأعلى وظايف كل مجموعة (بونص المنافسة
-        # القليلة)، بيعيد الترتيب، وبعدين بياخد أحسن ٥ من كل مجموعة.
+        # القليلة)، بيعيد الترتيب، وبعدين بيقسّم الوظايف حسب المنطقة
+        # (مصر / أوروبا) قبل ما ياخد أحسن ١٥ من كل واحدة.
         general_jobs = enrich_with_competition(general_jobs)
         company_jobs = enrich_with_competition(company_jobs)
-        top_general  = general_jobs[:5]
-        top_company  = company_jobs[:5]
+
+        egypt_jobs  = [j for j in general_jobs if j.get("_search_country") == "eg"]
+        europe_jobs = [j for j in general_jobs if j.get("_search_country") in EUROPE_COUNTRY_CODES]
+        other_jobs  = [j for j in general_jobs
+                       if j not in egypt_jobs and j not in europe_jobs]
+
+        top_egypt   = egypt_jobs[:TOP_N_EGYPT]
+        top_europe  = europe_jobs[:TOP_N_EUROPE]
+        top_other   = other_jobs[:5]
+        top_company = company_jobs[:TOP_N_COMPANY]
 
         date_str = datetime.now().strftime("%b %d, %Y")
         lines = [
             f"<b>Daily Job Report - {date_str}</b>\n"
-            f"Remote only | North Europe + Gulf + Egypt + Europe | LinkedIn only\n"
+            f"Onsite + Hybrid + Remote | Egypt + Europe | LinkedIn only\n"
         ]
 
-        if top_general:
-            lines.append("<b>-- Best Role Matches --</b>")
+        if top_egypt:
+            lines.append("<b>-- Egypt --</b>")
             lines.append("")
-            for i, job in enumerate(top_general, 1):
+            for i, job in enumerate(top_egypt, 1):
+                lines.append(format_job(i, job))
+                lines.append("")
+
+        if top_europe:
+            lines.append("<b>-- Europe --</b>")
+            lines.append("")
+            for i, job in enumerate(top_europe, 1):
+                lines.append(format_job(i, job))
+                lines.append("")
+
+        if top_other:
+            lines.append("<b>-- Worldwide Remote --</b>")
+            lines.append("")
+            for i, job in enumerate(top_other, 1):
                 lines.append(format_job(i, job))
                 lines.append("")
 
@@ -538,7 +518,10 @@ def main():
                 lines.append("")
 
         send_telegram("\n".join(lines))
-        print(f"Telegram sent: {len(top_general)} role matches + {len(top_company)} company matches.")
+        print(
+            f"Telegram sent: {len(top_egypt)} Egypt + {len(top_europe)} Europe "
+            f"+ {len(top_other)} worldwide + {len(top_company)} company matches."
+        )
 
     now_iso = datetime.now().isoformat()
     for job_id in this_run_ids:
