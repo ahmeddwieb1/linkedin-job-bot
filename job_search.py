@@ -15,14 +15,20 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 SEEN_JOBS_FILE    = os.path.join(os.path.dirname(__file__), "seen_jobs.json")
 SEEN_JOBS_TTL_DAYS = 7
-TOP_N_EGYPT  = 10
-TOP_N_EUROPE = 10
+TOP_N_EGYPT   = 15
+TOP_N_EUROPE  = 15
+TOP_N_GULF    = 15   # الخليج + الوطن العربي مع بعض
+TOP_N_AMERICA = 15
 TOP_N_COMPANY = 5
 
 EUROPE_COUNTRY_CODES = {
     "de", "nl", "pl", "ie", "gb", "es", "pt", "fr", "it",
     "se", "ch", "be", "dk", "fi", "no",
 }
+GULF_ARAB_COUNTRY_CODES = {
+    "ae", "sa", "qa", "kw", "bh", "om", "jo", "lb", "iq", "ma", "tn", "dz",
+}
+AMERICA_COUNTRY_CODES = {"us", "ca"}
 
 # البحث شامل onsite + hybrid + remote (شيلنا فلتر f_WT في search_linkedin)،
 # ومحصور في مصر (الأولوية الأولى) وأوروبا. غيّر القايمة دي حسب البلاد
@@ -51,6 +57,27 @@ LINKEDIN_SEARCHES = [
     {"keywords": "junior devops engineer",    "location": "France"},
     {"keywords": "junior devops engineer",    "location": "Italy"},
     {"keywords": "junior devops engineer",    "location": "Sweden"},
+    # الخليج والوطن العربي
+    {"keywords": "junior devops engineer",    "location": "United Arab Emirates"},
+    {"keywords": "devops engineer intern",    "location": "United Arab Emirates"},
+    {"keywords": "cloud engineer intern",     "location": "United Arab Emirates"},
+    {"keywords": "junior devops engineer",    "location": "Saudi Arabia"},
+    {"keywords": "cloud engineer intern",     "location": "Saudi Arabia"},
+    {"keywords": "junior devops engineer",    "location": "Qatar"},
+    {"keywords": "junior devops engineer",    "location": "Kuwait"},
+    {"keywords": "junior devops engineer",    "location": "Bahrain"},
+    {"keywords": "junior devops engineer",    "location": "Oman"},
+    {"keywords": "junior devops engineer",    "location": "Jordan"},
+    {"keywords": "junior devops engineer",    "location": "Lebanon"},
+    {"keywords": "junior devops engineer",    "location": "Morocco"},
+    {"keywords": "junior devops engineer",    "location": "Iraq"},
+    # أمريكا
+    {"keywords": "junior devops engineer",    "location": "United States"},
+    {"keywords": "devops engineer intern",    "location": "United States"},
+    {"keywords": "cloud engineer intern",     "location": "United States"},
+    {"keywords": "junior cloud engineer",     "location": "United States"},
+    {"keywords": "junior devops engineer",    "location": "Canada"},
+    {"keywords": "cloud engineer intern",     "location": "Canada"},
     {"keywords": "devops intern",             "location": "Worldwide", "remote_only": True},
     {"keywords": "junior devops engineer",    "location": "Worldwide", "remote_only": True},
     {"keywords": "junior cloud engineer",     "location": "Worldwide", "remote_only": True},
@@ -127,6 +154,16 @@ LOCATION_SCORES = {
     "sweden": 18, "stockholm": 18,
     "switzerland": 18, "zurich": 18,
     "belgium": 18, "brussels": 18,
+    # الخليج والوطن العربي
+    "united arab emirates": 18, "uae": 18, "dubai": 18, "abu dhabi": 18,
+    "saudi arabia": 18, "riyadh": 18, "jeddah": 18,
+    "qatar": 18, "doha": 18,
+    "kuwait": 18, "bahrain": 18, "oman": 18, "muscat": 18,
+    "jordan": 18, "amman": 18,
+    "lebanon": 18, "beirut": 18,
+    "morocco": 18, "iraq": 18,
+    # أمريكا
+    "united states": 18, "usa": 18, "canada": 18,
     "worldwide": 12, "global": 12,
     "remote": 10, "hybrid": 8,
 }
@@ -141,12 +178,20 @@ LOCATION_CODE_MAP = {
     "qatar": "qa", "doha": "qa",
     "kuwait": "kw", "bahrain": "bh",
     "oman": "om", "muscat": "om",
+    "jordan": "jo", "amman": "jo",
+    "lebanon": "lb", "beirut": "lb",
+    "iraq": "iq", "baghdad": "iq",
+    "morocco": "ma", "casablanca": "ma", "rabat": "ma",
+    "tunisia": "tn", "tunis": "tn",
+    "algeria": "dz", "algiers": "dz",
     "worldwide": "global",
     "united kingdom": "gb", "ireland": "ie",
     "germany": "de", "france": "fr", "netherlands": "nl",
     "spain": "es", "portugal": "pt", "italy": "it", "poland": "pl",
     "belgium": "be", "switzerland": "ch",
     "denmark": "dk", "finland": "fi", "sweden": "se", "norway": "no",
+    "united states": "us", "usa": "us",
+    "canada": "ca",
 }
 
 
@@ -473,53 +518,48 @@ def main():
         general_jobs = enrich_with_competition(general_jobs)
         company_jobs = enrich_with_competition(company_jobs)
 
-        egypt_jobs  = [j for j in general_jobs if j.get("_search_country") == "eg"]
-        europe_jobs = [j for j in general_jobs if j.get("_search_country") in EUROPE_COUNTRY_CODES]
-        other_jobs  = [j for j in general_jobs
-                       if j not in egypt_jobs and j not in europe_jobs]
+        egypt_jobs   = [j for j in general_jobs if j.get("_search_country") == "eg"]
+        europe_jobs  = [j for j in general_jobs if j.get("_search_country") in EUROPE_COUNTRY_CODES]
+        gulf_jobs    = [j for j in general_jobs if j.get("_search_country") in GULF_ARAB_COUNTRY_CODES]
+        america_jobs = [j for j in general_jobs if j.get("_search_country") in AMERICA_COUNTRY_CODES]
+        placed = egypt_jobs + europe_jobs + gulf_jobs + america_jobs
+        other_jobs   = [j for j in general_jobs if j not in placed]
 
         top_egypt   = egypt_jobs[:TOP_N_EGYPT]
         top_europe  = europe_jobs[:TOP_N_EUROPE]
+        top_gulf    = gulf_jobs[:TOP_N_GULF]
+        top_america = america_jobs[:TOP_N_AMERICA]
         top_other   = other_jobs[:5]
         top_company = company_jobs[:TOP_N_COMPANY]
 
         date_str = datetime.now().strftime("%b %d, %Y")
         lines = [
             f"<b>Daily Job Report - {date_str}</b>\n"
-            f"Onsite + Hybrid + Remote | Egypt + Europe | LinkedIn only\n"
+            f"Onsite + Hybrid + Remote | Egypt, Europe, Gulf & Arab World, "
+            f"America | LinkedIn only\n"
         ]
 
-        if top_egypt:
-            lines.append("<b>-- Egypt --</b>")
+        sections = [
+            ("-- Egypt --", top_egypt),
+            ("-- Europe --", top_europe),
+            ("-- Gulf & Arab World --", top_gulf),
+            ("-- America --", top_america),
+            ("-- Worldwide Remote --", top_other),
+            ("-- Target Company Openings --", top_company),
+        ]
+        for header, jobs in sections:
+            if not jobs:
+                continue
+            lines.append(f"<b>{header}</b>")
             lines.append("")
-            for i, job in enumerate(top_egypt, 1):
-                lines.append(format_job(i, job))
-                lines.append("")
-
-        if top_europe:
-            lines.append("<b>-- Europe --</b>")
-            lines.append("")
-            for i, job in enumerate(top_europe, 1):
-                lines.append(format_job(i, job))
-                lines.append("")
-
-        if top_other:
-            lines.append("<b>-- Worldwide Remote --</b>")
-            lines.append("")
-            for i, job in enumerate(top_other, 1):
-                lines.append(format_job(i, job))
-                lines.append("")
-
-        if top_company:
-            lines.append("<b>-- Target Company Openings --</b>")
-            lines.append("")
-            for i, job in enumerate(top_company, 1):
+            for i, job in enumerate(jobs, 1):
                 lines.append(format_job(i, job))
                 lines.append("")
 
         send_telegram("\n".join(lines))
         print(
             f"Telegram sent: {len(top_egypt)} Egypt + {len(top_europe)} Europe "
+            f"+ {len(top_gulf)} Gulf/Arab + {len(top_america)} America "
             f"+ {len(top_other)} worldwide + {len(top_company)} company matches."
         )
 
