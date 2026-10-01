@@ -1,12 +1,13 @@
-# 🤖 بوت وظايف لينكدإن
+# 🤖 بوت وظايف لينكدإن — نسخة Dwieb
 
-**اصحى الصبح تلاقي قايمة وظايف ريموت مرتّبة مستنياك على تليجرام — كل يوم.**
+**اصحى الصبح تلاقي قايمة وظايف DevOps/Cloud (onsite + hybrid + remote) مرتّبة مستنياك على تليجرام — كل يوم.**
 
 البوت ده بيدوّر على لينكدإن نيابة عنك مرة كل يوم، بيدّي كل وظيفة درجة حسب مهاراتك،
-بيبص كام واحد قدّم عليها قبلك، وبيبعتلك الأحسن بس.
+بيبص كام واحد قدّم عليها قبلك، وبيقسّمها على مناطقك المستهدفة، وبيبعتلك الأحسن
+من كل منطقة على تليجرام.
 مفيش داشبورد. مفيش تسجيل دخول. مجرد رسالة على موبايلك.
 
-حوالي ٥٠٠ سطر بايثون، وتشغيله بـ **صفر جنيه**.
+حوالي ٦٠٠ سطر بايثون، وتشغيله بـ **صفر جنيه**.
 
 ---
 
@@ -15,24 +16,32 @@
 كل يوم الصبح، رسالة واحدة على تليجرام شكلها كده:
 
 ```
-Daily Job Report - Sep 23, 2026
-Remote only | Europe + Gulf + Egypt | LinkedIn only
+Daily Job Report - Oct 01, 2026
+Onsite + Hybrid + Remote | Egypt, Europe, Gulf & Arab World, America | LinkedIn only
 
--- Best Role Matches --
+-- Egypt --
 
-#1 AI Automation Engineer
-Nordic Tech AB | Remote
-Excellent match (78 pts) | 7 applicants (low competition) | Apply on LinkedIn
+#1 Junior DevOps Engineer
+Some Company | Cairo
+Excellent match (78 pts) | 9 applicants (low competition) | Apply on LinkedIn
 
-#2 Business Analyst, AI Division
-Bayzat | Remote
-Strong match (54 pts) | 23 applicants (low competition) | Apply on LinkedIn
+-- Europe --
+
+#1 DevOps Engineer Intern
+Another Company | Berlin, Germany (Remote)
+Strong match (54 pts) | Apply on LinkedIn
+
+-- Gulf & Arab World --
+...
+
+-- America --
+...
+
+-- Worldwide Remote --
+...
 
 -- Target Company Openings --
-
-#1 Automation Specialist  [TARGET CO.]
-Careem | Remote
-Good match (41 pts) | Apply on LinkedIn
+...
 ```
 
 تدوس على اللينك، تقدّم، خلاص. **وعمره ما هيبعتلك نفس الوظيفة مرتين.**
@@ -43,12 +52,14 @@ Good match (41 pts) | Apply on LinkedIn
 
 | الميزة | يعني إيه بالنسبالك |
 |---|---|
-| 🎯 **ترتيب ذكي بالنقط** | كل وظيفة بتاخد نقط على اسم الوظيفة ومهاراتك والمكان — الأحسن بيطلع فوق لوحده |
-| 🥇 **أولوية للمنافسة القليلة** | البوت بيفتح الوظايف اللي فوق ويقرا عدد المتقدمين. **٧ متقدمين أحسن من ٤٠٠**، فبيرفّعهم في الترتيب |
+| 🎯 **ترتيب ذكي بالنقط** | كل وظيفة بتاخد نقط على اسم الوظيفة، مهاراتك (AWS, Terraform, Kubernetes, Docker, Ansible...)، والمكان |
+| 🌍 **٤ مناطق منفصلة** | مصر، أوروبا، الخليج والوطن العربي، أمريكا — كل منطقة ليها قسم وترتيب لوحدها في الرسالة |
+| 🏗️ **Onsite + Hybrid + Remote** | مش ريموت بس — النطاق شامل كل أنواع الشغل |
+| 📄 **صفحتين لكل سيرش** | يجيب لغاية ٥٠ نتيجة لكل كلمة بحث بدل ٢٥، ويوقف بدري لو خلصت النتايج |
+| 🥇 **أولوية للمنافسة القليلة** | البوت بيفتح الوظايف اللي فوق ويقرا عدد المتقدمين. **٩ متقدمين أحسن من ٤٠٠**، فبيرفّعهم في الترتيب |
 | 🔁 **مفيش تكرار خالص** | فاكر كل حاجة بعتهالك آخر ٧ أيام |
-| 🏢 **قايمة شركات بتراقبها** | بيتابع لوحده أي وظيفة بتفتح في الشركات اللي نفسك تشتغل فيها |
-| 🌍 **أكتر من ٤٠ سيرش في المرة** | في كل البلاد اللي تهمّك، وكمان لفّة على الريموت حوالين العالم |
-| 🆓 **مفيش API بفلوس** | شغال على صفحات لينكدإن العامة. مفيش RapidAPI، مفيش اشتراك، مفيش مفتاح |
+| 🏢 **قايمة شركات بتراقبها** | بيتابع لوحده أي وظيفة بتفتح في الشركات اللي نفسك تشتغل فيها (لسه فاضية، ضيف شركاتك وقت ما تحددها) |
+| 🆓 **مفيش API بفلوس** | شغال على صفحات لينكدإن العامة (guest jobs API). مفيش اشتراك، مفيش مفتاح |
 
 ---
 
@@ -106,29 +117,64 @@ python job_search.py
 
 ## ⏰ خلّيه يشتغل لوحده كل يوم
 
-قدامك طريقتين. **اختار واحدة.**
+قدامك 4 طرق. **اختار واحدة.**
 
-### الطريقة (أ) — على جهازك (الأفضل والأضمن)
-
-**ويندوز** — أمر واحد بيسجّل مهمة يومية:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File ".\setup_scheduler.ps1"
-```
-
-تغيّر الميعاد بـ `-At "09:30"`. وتجرّبه على طول بـ:
-
-```powershell
-Start-ScheduledTask -TaskName "LinkedIn Job Search Bot"
-```
-
-**ماك / لينكس** — ضيف cron job بـ `crontab -e`:
+### الطريقة (أ) — crontab بسيط (ماك/لينكس)
 
 ```cron
-0 11 * * * cd /path/to/linkedin-job-bot && /usr/bin/python3 job_search.py
+0 9 * * * cd /path/to/linkedin-job-bot && /usr/bin/python3 job_search.py
 ```
 
-### الطريقة (ب) — على السحابة بـ GitHub Actions (مجاني، من غير ما تفتح جهازك)
+بسيطة، بس فيها مشكلة شائعة: cron بيشغّل بايثون النظام مش الـ **virtual environment**
+بتاعك (لو بتستخدم واحد)، فممكن يقولك "مكتبة مش موجودة" مع إنها متثبتة. لو بتستخدم
+`venv`، روح للطريقة (ب) تحتها.
+
+### الطريقة (ب) — wrapper script + cron (الأضمن على لينكس/سيرفر) 🆕
+
+دي الطريقة الموصى بيها لو بتشغّل البوت على سيرفر أو جهاز Linux فيه virtual
+environment. بدل ما الـ cron يعتمد على `PATH` النظام (اللي ممكن يبقى غير متوقّع
+جوه cron)، بنوجهه صراحة لنسخة بايثون بتاعة الـ venv، وبنسجّل أي output أو error
+في ملف log بدل ما يضيع.
+
+اعمل ملف اسمه `run_bot.sh` في فولدر المشروع:
+
+```bash
+#!/bin/bash
+# wrapper script بيشغّل البوت من جوه cron، ومسجّل أي output/error في ملف log
+# بدل ما يختفي في العدم (مشكلة شائعة جداً مع cron jobs).
+
+# يدخل فولدر المشروع الأول — عشان أي مسار نسبي جوه الكود
+# (زي seen_jobs.json) يتكتب في المكان الصح، مش في / أو /home/dwieb
+cd /home/dwieb/linkedin-job-bot
+
+# بيشغّل بايثون بتاع الـ virtual environment بتاع المشروع (.venv) —
+# مش بايثون النظام — عشان يلاقي المكتبات اللي اتعملها pip install فيها
+# (requests, beautifulsoup4, python-dotenv...).
+# ">> cron.log 2>&1" بتحوّل الـ output العادي (stdout) والأخطاء (stderr)
+# مع بعض وتضيفهم في آخر ملف cron.log، بدل ما يضيعوا أو يوصلولك كإيميلات.
+/home/dwieb/linkedin-job-bot/.venv/bin/python job_search.py >> /home/dwieb/linkedin-job-bot/cron.log 2>&1
+```
+
+> غيّر `/home/dwieb/linkedin-job-bot` بالمسار الفعلي عندك فين ما جه، وتأكد إن
+> `.venv` هو اسم الفولدر الفعلي لبيئتك الافتراضية (أو `venv`، أو أي اسم تاني
+> استخدمته وقت `python -m venv`).
+
+هاته قابل للتنفيذ:
+
+```bash
+chmod +x /home/dwieb/linkedin-job-bot/run_bot.sh
+```
+
+وبعدين ضيفه في الـ crontab (`crontab -e`):
+
+```cron
+0 9 * * * /home/dwieb/linkedin-job-bot/run_bot.sh
+```
+
+ده بيشغّل البوت الساعة ٩ صباحاً كل يوم (بتوقيت السيرفر/الجهاز). لو حصلت مشكلة،
+افتح `cron.log` وهتلاقي تفاصيل الخطأ بالظبط.
+
+### الطريقة (ج) — على السحابة بـ GitHub Actions (مجاني، من غير ما تفتح جهازك)
 
 الريبو فيه ملف [`.github/workflows/daily-job-search.yml`](.github/workflows/daily-job-search.yml)
 اللي بيشغّل البوت على سيرفرات GitHub كل يوم الساعة ٨ صباحاً بتوقيت UTC.
@@ -148,20 +194,39 @@ Start-ScheduledTask -TaskName "LinkedIn Job Search Bot"
 > شغال تمام على اللابتوب بتاعك، فده السبب — استخدم **الطريقة (أ)**.
 > دي مشكلة من ناحية لينكدإن، مش باج في البوت.
 
+
+### الطريقة (د) — ويندوز (Task Scheduler)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File ".\setup_scheduler.ps1"
+```
+
+تغيّر الميعاد بـ `-At "09:30"`. وتجرّبه على طول بـ:
+
+```powershell
+Start-ScheduledTask -TaskName "LinkedIn Job Search Bot"
+```
+
+> ⚠️ **خلّي بالك:** لينكدإن أحياناً بيبلوك الطلبات الجاية من سيرفرات الداتا سنتر
+> (زي GitHub Actions)، فده السبب إن التشغيل محلياً (جهازك/سيرفرك الشخصي) هو
+> الأضمن بدل السحابة.
+
 ---
 
 ## 🛠️ ظبّطه على نفسك
 
 كل حاجة ممكن تعايز تغيّرها موجودة في أول [`job_search.py`](job_search.py).
 
-**١. البلاد اللي عايز تشتغل فيها** — غيّر في `LINKEDIN_SEARCHES`:
+**١. البلاد والمناطق** — موزّعة في `LINKEDIN_SEARCHES` على ٤ مناطق (مصر، أوروبا،
+الخليج والوطن العربي، أمريكا)، زائد سيرش عالمي ريموت بس:
 
 ```python
 LINKEDIN_SEARCHES = [
-    {"keywords": "AI automation",    "location": "Sweden"},
-    {"keywords": "data engineer",    "location": "Germany"},
-    # من غير تحديد بلد خالص — بيدوّر في كل حتة:
-    {"keywords": "python developer", "location": "Worldwide", "remote_only": True},
+    {"keywords": "junior devops engineer", "location": "Egypt"},
+    {"keywords": "junior devops engineer", "location": "Germany"},
+    {"keywords": "junior devops engineer", "location": "United Arab Emirates"},
+    {"keywords": "junior devops engineer", "location": "United States"},
+    {"keywords": "devops intern", "location": "Worldwide", "remote_only": True},
 ]
 ```
 
@@ -170,8 +235,8 @@ LINKEDIN_SEARCHES = [
 
 ```python
 COMPANY_SEARCHES = [
-    {"keywords": "Spotify", "location": "Sweden"},
-    {"keywords": "Careem",  "location": "United Arab Emirates"},
+    {"keywords": "Amazon", "location": "Egypt"},
+    {"keywords": "Careem", "location": "United Arab Emirates"},
 ]
 ```
 
@@ -179,16 +244,30 @@ COMPANY_SEARCHES = [
 
 | القاموس | بيتحكم في | مثال |
 |---|---|---|
-| `ROLE_SCORES` | أسامي الوظايف اللي عايزها | `"ai automation": 40` |
-| `SKILL_SCORES` | التكنولوجيا اللي بتشتغل بيها | `"n8n": 22, "python": 6` |
-| `LOCATION_SCORES` | البلاد المفضّلة | `"sweden": 25, "remote": 14` |
+| `ROLE_SCORES` | أسامي الوظايف اللي عايزها | `"devops intern": 40` |
+| `SKILL_SCORES` | التكنولوجيا اللي بتشتغل بيها | `"aws": 20, "terraform": 16` |
+| `LOCATION_SCORES` | البلاد المفضّلة | `"egypt": 26, "remote": 10` |
 
 حط الوظيفة اللي بتحلم بيها على أعلى رقم، والبلد اللي نفسك فيها ورّاها على طول.
 
-**٤. عدد الوظايف اللي توصلك** — البوت بيبعت أحسن ٥ وظايف + أحسن ٥ من الشركات
-المستهدفة. غيّر `[:5]` في دالة `main()`.
+**٤. عدد الوظايف اللي توصلك من كل منطقة** — غيّر القيم دي في أول الملف:
 
-**٥. الوظايف تبقى جديدة قد إيه** — القيمة `f_TPR` في `search_linkedin()` متظبطة على
+```python
+TOP_N_EGYPT   = 15
+TOP_N_EUROPE  = 15
+TOP_N_GULF    = 15   # الخليج + الوطن العربي مع بعض
+TOP_N_AMERICA = 15
+TOP_N_COMPANY = 5
+```
+
+**٥. نطاق نوع الشغل** — البوت حالياً بيجيب onsite + hybrid + remote مع بعض (مفيش
+فلتر `f_WT`). لو حبيت ترجع تحصره على ريموت بس، ضيف `"f_WT": "2"` في
+`base_params` جوه `search_linkedin()`.
+
+**٦. عدد الصفحات لكل سيرش** — `max_pages=2` في تعريف `search_linkedin()` (يعني
+لغاية ٥٠ نتيجة). زوّدها لو عايز نتايج أكتر، بس كل صفحة زيادة = طلب إضافي للينكدإن.
+
+**٧. الوظايف تبقى جديدة قد إيه** — القيمة `f_TPR` في `search_linkedin()` متظبطة على
 `r259200` (آخر ٣ أيام). استخدم `r86400` لو عايز آخر ٢٤ ساعة بس.
 
 ---
@@ -209,11 +288,12 @@ COMPANY_SEARCHES = [
 job_search.py                       البوت — بيدوّر، يحسب النقط، يرتّب، ويبعت
 job-search.md                       قالب سكيل Claude Code
 README.md                           الدليل ده
+run_bot.sh                          wrapper script لتشغيل البوت من جوه cron (لينكس)
 setup_scheduler.ps1                 أمر واحد يسجّل المهمة اليومية على ويندوز
-requirements.txt                    تلات مكتبات بس
+requirements.txt                    المكتبات المطلوبة
 .env.example                        قالب بيانات الدخول
 .github/workflows/
-  └── daily-job-search.yml          تشغيل يومي مجاني على GitHub Actions
+  └── daily-job-search.yml          تشغيل يومي مجاني على GitHub Actions (غير موصى بيه — شوف تحذير السحابة فوق)
 ```
 
 ---
@@ -229,6 +309,10 @@ requirements.txt                    تلات مكتبات بس
 **`LinkedIn returned 429`**
 ← لينكدإن مأقّتك. استنى كام دقيقة. وما تشغّلوش في لوب.
 
+**cron مشغّل بس مفيش حاجة بتوصل**
+← افتح `cron.log` (لو بتستخدم `run_bot.sh`) وشوف الخطأ بالظبط. أغلب
+الوقت بيكون مسار الـ `.venv` غلط أو `.env` مش في نفس الفولدر.
+
 **لقى ٠ وظيفة جديدة**
 ← ده غالباً سلوك صح — هو بيبلّغ بس عن وظايف مبعتهاش آخر ٧ أيام، ومتنزّلة في آخر
 ٣ أيام. لو عايز تشوف كل حاجة تاني، امسح ملف `seen_jobs.json`.
@@ -241,8 +325,8 @@ requirements.txt                    تلات مكتبات بس
 ## ⚖️ ملاحظات
 
 البوت ده بيقرا وظايف لينكدإن **العامة، من غير تسجيل دخول** — نفس الصفحات اللي أي حد
-بيشوفها من غير حساب. بيعمل حوالي ٥٠ طلب في اليوم، وده أخف من إنك تتصفّح بإيدك.
-اتعامل بعقل: ما تزوّدش عدد المرات، وما تشغّلوش في لوب.
+بيشوفها من غير حساب. بيعمل حوالي ٨٠-١٠٠ طلب في اليوم (مع الصفحتين لكل سيرش)، وده
+أخف من إنك تتصفّح بإيدك. اتعامل بعقل: ما تزوّدش عدد المرات، وما تشغّلوش في لوب.
 
 مقدَّم كما هو للاستخدام الشخصي في البحث عن شغل. لينكدإن ممكن يغيّر شكل صفحاته في أي
 وقت، وساعتها هيحتاج تعديل في دالة `parse_card()`.
