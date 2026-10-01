@@ -335,36 +335,48 @@ def parse_card(card, search_location: str) -> dict | None:
     }
 
 
-def search_linkedin(keywords: str, location: str, remote_only: bool = False) -> list:
+def search_linkedin(keywords: str, location: str, remote_only: bool = False,
+                     max_pages: int = 2) -> list:
+    """بيجيب لغاية max_pages صفحة لكل سيرش (25 نتيجة/صفحة) بدل صفحة واحدة بس،
+    ويوقف بدري لو صفحة رجعت فاضية (يعني خلصنا النتايج المتاحة)."""
     url = "https://www.linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search"
-    params = {
+    base_params = {
         "keywords": keywords,
         "f_TPR":    "r259200",  # last 3 days
-        "start":    0,
         # مفيش f_WT هنا خالص — يعني النتايج بتشمل onsite + hybrid + remote.
         # لو حبيت ترجع تحصر النتايج على ريموت بس، رجّع "f_WT": "2".
     }
     if remote_only:
         # من غير فلتر بلد — بيدوّر في كل الدول بدل قايمة
         # الخليج/مصر/أوروبا المحدودة.
-        params["location"] = ""
+        base_params["location"] = ""
     else:
-        params["location"] = location
-    try:
-        resp = requests.get(url, headers=LINKEDIN_HEADERS, params=params, timeout=15)
-        if resp.status_code != 200:
-            print(f"Warning: LinkedIn returned {resp.status_code} for '{keywords}' / {location}")
-            return []
-        soup = BeautifulSoup(resp.text, "html.parser")
-        jobs = []
-        for card in soup.find_all("li"):
-            job = parse_card(card, location)
-            if job:
-                jobs.append(job)
-        return jobs
-    except requests.RequestException as e:
-        print(f"Warning: LinkedIn search failed for '{keywords}': {e}")
-        return []
+        base_params["location"] = location
+
+    all_jobs = []
+    for page in range(max_pages):
+        params = dict(base_params, start=page * 25)
+        try:
+            resp = requests.get(url, headers=LINKEDIN_HEADERS, params=params, timeout=15)
+            if resp.status_code != 200:
+                print(f"Warning: LinkedIn returned {resp.status_code} for "
+                      f"'{keywords}' / {location} (page {page + 1})")
+                break
+            soup = BeautifulSoup(resp.text, "html.parser")
+            page_jobs = []
+            for card in soup.find_all("li"):
+                job = parse_card(card, location)
+                if job:
+                    page_jobs.append(job)
+            if not page_jobs:
+                break  # مفيش نتايج أكتر — نوقف بدري
+            all_jobs.extend(page_jobs)
+            if page < max_pages - 1:
+                time.sleep(0.5)  # مسافة بسيطة بين الصفحات
+        except requests.RequestException as e:
+            print(f"Warning: LinkedIn search failed for '{keywords}' (page {page + 1}): {e}")
+            break
+    return all_jobs
 
 
 # ── تليجرام ───────────────────────────────────────────────────────────────────
