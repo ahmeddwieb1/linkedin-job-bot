@@ -1,48 +1,48 @@
-name: Daily Job Search
-
-# بيشغّل البوت مرة كل يوم ويبعتلك النتايج على تليجرام.
-on:
-  schedule:
-    # ٨:٠٠ بتوقيت UTC = ١٠:٠٠ بتوقيت القاهرة (شتاءً) / ١١:٠٠ (صيفاً).
-    # الـ cron بتاع GitHub دايماً UTC — ظبّطه على توقيت بلدك.
-    - cron: "0 8 * * *"
-  # بيخليك تشغّله بإيدك من تاب Actions (مفيد جداً للتجربة).
-  workflow_dispatch:
-
-jobs:
-  search:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-
-    steps:
-      # بيجيب الكود من الريبو
-      - name: Check out the repo
-        uses: actions/checkout@v4
-
-      # بيسطّب بايثون
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-
-      # بيسطّب المكتبات
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      # ملف seen_jobs.json هو ذاكرة البوت بالوظايف اللي بعتها قبل كده.
-      # الكاش بينقله بين التشغيلات عشان مايجيلكش تكرار.
-      - name: Restore seen-jobs memory
-        uses: actions/cache@v4
-        with:
-          path: seen_jobs.json
-          key: seen-jobs-${{ github.run_id }}
-          restore-keys: |
-            seen-jobs-
-
-      # بيشغّل البوت
-      - name: Run the job search
-        env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python job_search.py
+#name: Daily Job Search
+#
+## بيشغّل البوت مرة كل يوم ويبعتلك النتايج على تليجرام.
+#on:
+#  schedule:
+#    # ٨:٠٠ بتوقيت UTC = ١٠:٠٠ بتوقيت القاهرة (شتاءً) / ١١:٠٠ (صيفاً).
+#    # الـ cron بتاع GitHub دايماً UTC — ظبّطه على توقيت بلدك.
+#    - cron: "0 8 * * *"
+#  # بيخليك تشغّله بإيدك من تاب Actions (مفيد جداً للتجربة).
+#  workflow_dispatch:
+#
+#jobs:
+#  search:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 15
+#
+#    steps:
+#      # بيجيب الكود من الريبو
+#      - name: Check out the repo
+#        uses: actions/checkout@v4
+#
+#      # بيسطّب بايثون
+#      - name: Set up Python
+#        uses: actions/setup-python@v5
+#        with:
+#          python-version: "3.11"
+#          cache: pip
+#
+#      # بيسطّب المكتبات
+#      - name: Install dependencies
+#        run: pip install -r requirements.txt
+#
+#      # ملف seen_jobs.json هو ذاكرة البوت بالوظايف اللي بعتها قبل كده.
+#      # الكاش بينقله بين التشغيلات عشان مايجيلكش تكرار.
+#      - name: Restore seen-jobs memory
+#        uses: actions/cache@v4
+#        with:
+#          path: seen_jobs.json
+#          key: seen-jobs-${{ github.run_id }}
+#          restore-keys: |
+#            seen-jobs-
+#
+#      # بيشغّل البوت
+#      - name: Run the job search
+#        env:
+#          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+#          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+#        run: python job_search.py
